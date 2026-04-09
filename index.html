@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Search</title>
+
+<style>
+body{
+    margin:0;
+    background:#000;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+.container{
+    padding:20px;
+}
+
+input{
+    padding:12px;
+    width:70%;
+    max-width:300px;
+    border-radius:10px;
+    border:none;
+}
+
+button{
+    padding:12px;
+    border:none;
+    background:red;
+    color:white;
+    border-radius:10px;
+    margin-left:10px;
+}
+
+iframe{
+    width:90%;
+    max-width:400px;
+    height:220px;
+    margin-top:20px;
+    border-radius:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🎥 YouTube Video Search</h2>
+
+    <input type="text" id="search" placeholder="Search video...">
+    <button onclick="searchVideo()">Search 🔍</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+
+const YT_KEY = "AIzaSyALRolOYOpUKikq2S0--0137Eyw72Sx5XE"; // 👈 apna key daalo
+
+async function searchVideo(){
+    let query = document.getElementById("search").value;
+
+    if(query.trim() === ""){
+        alert("Enter something");
+        return;
+    }
+
+    try{
+        let res = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${YT_KEY}&maxResults=1&type=video`
+        );
+
+        let data = await res.json();
+
+        let videoId = data.items[0].id.videoId;
+
+        let video = "https://www.youtube.com/embed/" + videoId;
+
+        document.getElementById("result").innerHTML = `
+            <iframe src="${video}" allowfullscreen></iframe>
+        `;
+
+    }catch(e){
+        document.getElementById("result").innerHTML = "⚠️ Error loading video";
+        console.log(e);
+    }
+}
+
+</script>
+
+</body>
+</html>
